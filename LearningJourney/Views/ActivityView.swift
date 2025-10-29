@@ -3,7 +3,6 @@
 //  LearningJourney
 //
 //  Created by Farah Almozaini on 27/10/2025.
-
 import SwiftUI
 struct ActivityView: View {
     @StateObject var activityVM: ActivityViewModel
@@ -12,7 +11,6 @@ struct ActivityView: View {
     @State private var showCalendar = false
     @State private var showOnboarding = false
     @State private var showChangeGoal = false
-
     //🟥
     init(learnerM: LearnerModel) {
         _activityVM = StateObject(wrappedValue: ActivityViewModel(learnerM: learnerM))
@@ -109,7 +107,6 @@ struct ActivityView: View {
     }//body
     
 }//struct
-
 #Preview {
     
     ActivityView(learnerM: LearnerModel(

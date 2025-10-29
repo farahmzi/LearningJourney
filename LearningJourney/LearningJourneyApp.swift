@@ -10,31 +10,40 @@ import SwiftUI
 @main
 struct LearningJourneyApp: App {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @State private var currentLearner: LearnerModel? = nil
+    
     init() {
         UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
- 
     }
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                if hasCompletedOnboarding {
-                    ActivityView(
-                        learnerM: LearnerModel(
-                            subject: "Swift",
-                            duration: .month,
-                            startDate: Date(),
-                            streak: 3,
-                            freezeCount: 1,
-                            freezeLimit: 8
-                        )
-                    )
+                if hasCompletedOnboarding, let learner = currentLearner {
+                    // اختَر الواجهة حسب المدة
+                    destinationView(for: learner)
                 } else {
-                    // Pass closure to mark onboarding as complete
-                    OnboardingView {
+                    OnboardingView { learner in
+                        currentLearner = learner
                         hasCompletedOnboarding = true
                     }
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func destinationView(for learner: LearnerModel) -> some View {
+        switch learner.duration {
+        case .week:
+            // إن لم تكن لديك واجهات مخصصة، يمكنك استخدام ActivityView مباشرة
+            ActivityView(learnerM: learner)
+            // أو WeekActivityView(learner: learner)
+        case .month:
+            ActivityView(learnerM: learner)
+            // أو MonthActivityView(learner: learner)
+        case .year:
+            ActivityView(learnerM: learner)
+            // أو YearActivityView(learner: learner)
         }
     }
 }

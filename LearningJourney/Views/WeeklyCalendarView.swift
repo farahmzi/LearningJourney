@@ -2,9 +2,8 @@
 //  WeeklyCalendarView.swift
 //  LearningJourney
 //
-//  Created by Farah Almozaini on 27/10/2025.
+//  Created by Yousra Abdelrahman on 04/05/1447 AH.
 //
-
 import SwiftUI
 
 struct WeeklyCalendarView: View {
@@ -58,7 +57,7 @@ struct WeeklyCalendarView: View {
                 .labelsHidden()
                 .frame(maxHeight: 189)
                 .transition(.opacity.combined(with: .move(edge: .top)))
-                .onChange(of: calendarVM.selectedMonth) {
+                .onChange(of: calendarVM.selectedMonth) { _ in
                     calendarVM.generateWeekDays()
                 }
             }
@@ -108,7 +107,7 @@ struct WeeklyCalendarView: View {
                                 Image(systemName: "flame.fill")
                                     .font(.system(size: 15))
                                     .foregroundStyle(Color.flameOranage)
-                                 StreakFreezeView(count: activityVM.learnerM.streak, singular: "Day Streak", plural: "Days Streak")
+                                StreakFreezeView(count: activityVM.learnerM.streak, singular: "Day Streak", plural: "Days Streak")
                             }//HStack - For Flame, Count, and Text
                         }//ZStack - For Streak Overlaping
                         .padding(.trailing, 13)
@@ -143,10 +142,11 @@ struct WeeklyCalendarView: View {
         if day.isFreezed { return .freezeBG }
         return .clear
     }
-    private func foregroundColor(for day: Day) -> Color {
-        if day.isCurrent { return (activityVM.isLogButtonDisabled ? (activityVM.didUseFreezeToday ? .cubeBlue : .flameOranage) : .white) }
-        if day.isLogged { return .flameOranage }
-        if day.isFreezed { return .cubeBlue }
+    private func foregroundColor(for: Day) -> Color {
+        if `for`.isCurrent { return (activityVM.isLogButtonDisabled ? (activityVM.didUseFreezeToday ? .cubeBlue : .flameOranage) : .white) }
+        if `for`.isLogged { return .flameOranage }
+        if `for`.isFreezed { return .cubeBlue }
         return .white
     }
 }
+

@@ -4,14 +4,13 @@
 //
 //  Created by Farah Almozaini on 27/10/2025.
 //
-
-
 import SwiftUI
 struct OnboardingView: View {
     //Object of the OnboardingViewModel
     @State var onboardingVM = OnboardingViewModel()
     
-    var onFinished: () -> Void = {}
+    // بدّلنا التوقيع ليمرّر LearnerModel النهائي
+    var onFinished: (LearnerModel) -> Void = { _ in }
     
     var body: some View {
             VStack{
@@ -33,7 +32,7 @@ struct OnboardingView: View {
                     Text("I want to learn")
                         .font(.system(size: 22))
                         
-                    TextField("Swift", text: $onboardingVM.learner.subject)
+                    TextField("Swift", text: $onboardingVM.subject)
                         .font(.system(size: 17))
                         .foregroundColor(.gray)
                     Divider()
@@ -41,9 +40,8 @@ struct OnboardingView: View {
                         .font(.system(size: 22))
                         .padding(.top, 20)
                     HStack{
-                        //No need for (...id: \.self) anymore — because the enum is Identifiable.
-                        ForEach(LearnerModel.Duration.allCases) {
-                            duration in Button {
+                        ForEach(LearnerModel.Duration.allCases) { duration in
+                            Button {
                                 onboardingVM.selectDuration(duration)
                             } label: {
                                 Text(duration.rawValue.capitalized)
@@ -52,16 +50,17 @@ struct OnboardingView: View {
                                     .background(onboardingVM.selectedDuration == duration ? Color(.primaryButton) : Color.clear)
                                     .cornerRadius(30)
                                     .foregroundColor(.white)
-                                }
-                                .buttonStyle(.plain)
-                        }//ForEach
-                    }//HStack - For Buttons
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
                 Spacer()
-                }//VStack - For Text Alignment
+                }
                 .padding(.top, 40)
                 Button{
                     onboardingVM.createLearner()
-                    onFinished()  // This switches the root view to ActivityView
+                    // مرّرنا الـ learner النهائي للروت
+                    onFinished(onboardingVM.learner)
                 }label: {
                     Text("Start learning")
                 }
@@ -73,15 +72,10 @@ struct OnboardingView: View {
                 .background(.primaryButton)
                 .cornerRadius(30)
               
-            
-            }//VStack
+            }
             .padding()
-     
-        
-        
-    }//body
-}//struct
-
+    }
+}
 #Preview {
-    OnboardingView()
+    OnboardingView { _ in }
 }

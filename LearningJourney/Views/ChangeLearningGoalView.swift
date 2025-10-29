@@ -29,6 +29,15 @@ struct ChangeLearningGoalView: View {
         selectedDuration != activityVM.learnerM.duration
     }
 
+    // عرض فوري لعدد الفريز حسب الاختيار الحالي
+    private var previewFreezeLimit: Int {
+        switch selectedDuration {
+        case .week:  return 2
+        case .month: return 8
+        case .year:  return 96
+        }
+    }
+
     var body: some View {
         ZStack {
             // المحتوى الأساسي
@@ -60,6 +69,12 @@ struct ChangeLearningGoalView: View {
                             .buttonStyle(.plain)
                         }
                     }
+
+                    // سطر يوضح عدد الفريز المتوقع حسب الاختيار الحالي
+                    Text("\(previewFreezeLimit) Freezes will be available for this period")
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                        .padding(.top, 4)
                 }
 
                 Spacer()
@@ -73,21 +88,20 @@ struct ChangeLearningGoalView: View {
                         showConfirm = true
                     } label: {
                         ZStack {
+                            // دائرة برتقالية ممتلئة بالكامل
                             Circle()
-                                .fill(Color.clear)
+                                .fill(Color(.primaryButton))
                                 .frame(width: 44, height: 44)
-                                .glassEffect(.clear.interactive().tint(Color(.primaryButton)))
-                            Circle()
-                                .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
-                                .frame(width: 44, height: 44)
+
+                            // أيقونة الصح باللون الأبيض
                             Image(systemName: "checkmark")
                                 .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(Color(.onboardingLogoBG))
+                                .foregroundColor(.white)
                         }
                     }
                     .buttonStyle(.plain)
                     .frame(width: 44, height: 44)
-                    .opacity(hasChanges && !subject.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 1 : 0.5)
+                    // التعطيل يمنع التفاعل فقط، اللون يبقى برتقالي كما طلبتِ
                     .disabled(!hasChanges || subject.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
@@ -123,13 +137,8 @@ struct ChangeLearningGoalView: View {
 
         // صفّر التقدّم والأزرار
         activityVM.resetForNewGoal()
-
-        // حدّث حدود التجميد وفق المدة
-        switch selectedDuration {
-        case .week:  activityVM.learnerM.freezeLimit = 2
-        case .month: activityVM.learnerM.freezeLimit = 8
-        case .year:  activityVM.learnerM.freezeLimit = 96
-        }
+        // لا نضبط freezeLimit يدويًا هنا — resetForNewGoal() يستدعي setupFreezeLimit()
+        // والتي تستخدم selectedDuration.defaultFreezeLimit لضمان الاتساق
 
         // حدّث تقويم العرض ليعكس الموضوع/التواريخ الجديدة
         calendarVM.learnerM = activityVM.learnerM

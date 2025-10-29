@@ -17,13 +17,8 @@ class OnboardingViewModel {
     var learner = LearnerModel()
     
     func createLearner() {
-        // احسب حدّ التجميد بناءً على المدة المختارة
-        let limit: Int
-        switch selectedDuration {
-        case .week:  limit = 2
-        case .month: limit = 8
-        case .year:  limit = 96
-        }
+        // استخدم المصدر الموحد لقيمة الحد
+        let limit = selectedDuration.defaultFreezeLimit
         learner = LearnerModel(
             subject: subject,
             duration: selectedDuration,
@@ -41,3 +36,4 @@ class OnboardingViewModel {
     }
 }
 //class
+
