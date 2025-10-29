@@ -130,17 +130,16 @@ struct ChangeLearningGoalView: View {
     }
 
     private func applyChangesAndResetProgress() {
-        // حدّث نموذج المتعلم
+        // تحديث بيانات المتعلّم
         activityVM.learnerM.subject = subject.trimmingCharacters(in: .whitespacesAndNewlines)
         activityVM.learnerM.duration = selectedDuration
         activityVM.learnerM.startDate = Date()
 
-        // صفّر التقدّم والأزرار
+        // تصفير التقدّم وإعادة ضبط الحدود
         activityVM.resetForNewGoal()
-        // لا نضبط freezeLimit يدويًا هنا — resetForNewGoal() يستدعي setupFreezeLimit()
-        // والتي تستخدم selectedDuration.defaultFreezeLimit لضمان الاتساق
+        // ملاحظة: resetForNewGoal يستدعي setupFreezeLimit الذي يضبط freezeLimit حسب المدة
 
-        // حدّث تقويم العرض ليعكس الموضوع/التواريخ الجديدة
+        // مزامنة تقويم العرض مع القيم الجديدة
         calendarVM.learnerM = activityVM.learnerM
         calendarVM.setMonth(Date())
     }

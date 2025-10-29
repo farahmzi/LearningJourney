@@ -4,25 +4,28 @@
 //
 //  Created by Farah Almozaini on 27/10/2025.
 
-
 import SwiftUI
+
 struct CalendarView: View {
+    // نستخدم StateObject هنا لأن هذه الصفحة تملك نسخة خاصة من ActivityViewModel
     @StateObject var activityVM: ActivityViewModel
 
+    // مُهيّئ يستقبل المتعلّم ويهيّئ الـ VM
     init(learnerM: LearnerModel) {
         _activityVM = StateObject(wrappedValue: ActivityViewModel(learnerM: learnerM))
     }
 
     var body: some View {
+        // قائمة قابلة للتمرير تعرض عدّة أشهر
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 24) {
                 ForEach(generateMonths(), id: \.self) { monthDate in
-                    // Pass the monthDate into the ViewModel initializer
+                    // إنشاء ViewModel للشهر المحدد لعرضه
                     let viewModel = CalendarViewModel(
                         learnerM: activityVM.learnerM,
                         selectedMonth: monthDate
                     )
-
+                    // تقويم شهري لكل شهر مولّد
                     MonthlyCalendarView(viewModel: viewModel)
                         .padding(.horizontal)
                 }
@@ -31,6 +34,7 @@ struct CalendarView: View {
         }
     }
 
+    // توليد مصفوفة تواريخ تمثل 6 أشهر قبل و6 أشهر بعد الشهر الحالي
     private func generateMonths() -> [Date] {
         let calendar = Calendar.current
         let current = Date()
@@ -43,7 +47,6 @@ struct CalendarView: View {
     }
 }
 
-
 #Preview {
     CalendarView(learnerM: LearnerModel(
         subject: "Swift",
@@ -54,3 +57,4 @@ struct CalendarView: View {
         freezeLimit: 8
     ))
 }
+

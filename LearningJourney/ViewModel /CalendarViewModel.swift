@@ -9,38 +9,43 @@ import Foundation
 internal import Combine
 
 class CalendarViewModel: ObservableObject {
-    @Published var currentDate: Date = Date()            // used for weekly view
-    @Published var selectedMonth: Date = Date()          // which month this VM represents
+    // تاريخ الأسبوع الحالي لعرض التقويم الأسبوعي
+    @Published var currentDate: Date = Date()
+    // الشهر المختار لعرض التقويم الشهري
+    @Published var selectedMonth: Date = Date()
+    // إظهار/إخفاء منتقي الشهر داخل العرض الأسبوعي
     @Published var showMonthPicker: Bool = false
     
+    // أسماء أيام الأسبوع
     @Published var weekDays: [String] = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
+    // الأيام التي سيتم عرضها في الأسبوع والشهر
     @Published var daysInWeek: [Day] = []
     @Published var daysInMonth: [Day] = []
     
+    // نموذج المتعلّم للوصول إلى تواريخ التعلم والفريز
     var learnerM: LearnerModel
     private var calendar = Calendar.current
     
-    // UPDATED initializer — accept a selectedMonth
+    // مُهيّئ يقبل شهر محدد لبدء العرض منه
     init(learnerM: LearnerModel, selectedMonth: Date = Date()) {
         self.learnerM = learnerM
         self.selectedMonth = selectedMonth
-        
-        // Make currentDate align with selectedMonth for weeks if you prefer
+        // مزامنة currentDate مع selectedMonth لعرض أسبوع من نفس الشهر
         self.currentDate = selectedMonth
         
         generateWeekDays()
         generateMonthDays()
     }
     
-    // Helper to change the month and regenerate
+    // تغيير الشهر وإعادة توليد الأيام
     func setMonth(_ month: Date) {
         selectedMonth = month
-        // optionally sync currentDate too:
         currentDate = month
         generateMonthDays()
         generateWeekDays()
     }
     
+    // توليد بيانات أيام الأسبوع الحالي
     func generateWeekDays() {
         guard let weekStart = calendar.dateInterval(of: .weekOfMonth, for: currentDate)?.start else { return }
         daysInWeek = (0..<7).compactMap { offset in
@@ -56,6 +61,7 @@ class CalendarViewModel: ObservableObject {
         }
     }
     
+    // توليد بيانات أيام الشهر المختار
     func generateMonthDays() {
         guard let monthInterval = calendar.dateInterval(of: .month, for: selectedMonth) else { return }
         let daysCount = calendar.dateComponents([.day], from: monthInterval.start, to: monthInterval.end).day ?? 0
@@ -73,6 +79,7 @@ class CalendarViewModel: ObservableObject {
         }
     }
     
+    // تنقّل أسبوعي للأمام والخلف
     func goToNextWeek() {
         currentDate = calendar.date(byAdding: .weekOfMonth, value: 1, to: currentDate) ?? currentDate
         generateWeekDays()
@@ -83,7 +90,7 @@ class CalendarViewModel: ObservableObject {
         generateWeekDays()
     }
     
-    // month navigation: use setMonth so everything regenerates consistently
+    // تنقّل شهري للأمام والخلف
     func goToNextMonth() {
         if let next = calendar.date(byAdding: .month, value: 1, to: selectedMonth) {
             setMonth(next)
@@ -96,3 +103,4 @@ class CalendarViewModel: ObservableObject {
         }
     }
 }
+

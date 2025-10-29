@@ -9,12 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct Welldone: View {
+    // إغلاق يُستدعى عند الضغط على زر القلم أو زر "Set new learning goal"
+    // ActivityView يمرره لفتح صفحة ChangeLearningGoalView
     var onEditTapped: (() -> Void)? = nil
+    
+    // لم نعد نستخدم التنقل الداخلي هنا لأن ActivityView يتكفّل بالتنقل
     @State var navigate: Bool = false
     
     var body: some View {
-        VStack(spacing: 8){
-            // زر القلم في أعلى الواجهة
+        VStack(spacing: 8) {
+            // زر القلم أعلى الواجهة لتعديل الهدف
             HStack {
                 Spacer()
                 Button {
@@ -28,13 +32,15 @@ struct Welldone: View {
                 .glassEffect(.regular.interactive().tint(.gray.opacity(0.1)))
             }
             
+            // أيقونة التهنئة
             Image(systemName: "hands.and.sparkles.fill")
                 .frame(width: 41, height: 41)
                 .foregroundStyle(.currentDayCalendar)
                 .font(.system(size: 40))
                 .padding(.top, 18)
             
-            VStack (spacing: 4){
+            // نصوص التهنئة والتوضيح
+            VStack (spacing: 4) {
                 Text("Well done!").font(.title2).bold()
                 Text("Goal completed! start learning again\nor set new learning goal")
                     .multilineTextAlignment(.center)
@@ -42,9 +48,11 @@ struct Welldone: View {
                     .lineHeight(.leading(increase: 10))
                     .foregroundStyle(.gray)
             }
+            
             Spacer()
             
-            Button{
+            // زر لبدء إعداد هدف جديد (يفتح نفس صفحة التغيير)
+            Button {
                 onEditTapped?()
             } label: {
                 Text("Set new learning goal")
@@ -54,6 +62,7 @@ struct Welldone: View {
             }
             .buttonStyle(.plain)
             
+            // ملاحظة: يمكن لاحقًا جعل هذا يعيد تشغيل نفس الهدف مباشرة
             Text("Set same learning goal and duration")
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(.currentDayCalendar)

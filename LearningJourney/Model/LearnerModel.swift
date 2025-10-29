@@ -27,20 +27,17 @@ struct LearnerModel: Identifiable, Codable {
         let start = calendar.startOfDay(for: startDate)
         switch duration {
         case .week:
-            // 7 consecutive days: end at start-of-day after 7th day
+            // 7 أيام متتالية: نهاية الفترة هي بداية اليوم بعد اليوم السابع
             return calendar.date(byAdding: .day, value: 7, to: start)!
         case .month:
-            // End of that calendar month at local start-of-day (the day after the last day)
+            // نهاية الشهر الميلادي: بداية اليوم لأول يوم من الشهر التالي
             let comps = calendar.dateComponents([.year, .month], from: start)
-            // first day of month
             let monthStart = calendar.date(from: comps)!
-            // next month start
             let nextMonthStart = calendar.date(byAdding: .month, value: 1, to: monthStart)!
-            return nextMonthStart // start-of-day of next month
+            return nextMonthStart
         case .year:
-            // End of that calendar year at local start-of-day (Jan 1 next year)
+            // نهاية السنة الميلادية: بداية يوم 1 يناير للسنة التالية
             let year = calendar.component(.year, from: start)
-            // Jan 1 of next year at start-of-day
             var nextYearComps = DateComponents()
             nextYearComps.year = year + 1
             nextYearComps.month = 1

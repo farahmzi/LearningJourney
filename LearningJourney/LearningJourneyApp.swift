@@ -35,15 +35,11 @@ struct LearningJourneyApp: App {
     private func destinationView(for learner: LearnerModel) -> some View {
         switch learner.duration {
         case .week:
-            // إن لم تكن لديك واجهات مخصصة، يمكنك استخدام ActivityView مباشرة
             ActivityView(learnerM: learner)
-            // أو WeekActivityView(learner: learner)
         case .month:
             ActivityView(learnerM: learner)
-            // أو MonthActivityView(learner: learner)
         case .year:
             ActivityView(learnerM: learner)
-            // أو YearActivityView(learner: learner)
         }
     }
 }

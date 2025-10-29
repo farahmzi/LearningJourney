@@ -4,16 +4,20 @@
 //
 //  Created by Yousra Abdelrahman on 04/05/1447 AH.
 //
+
 import SwiftUI
 
 struct WeeklyCalendarView: View {
+    // نستخدم ObservedObject لأن المالك للـ VMs خارجي
     @ObservedObject var calendarVM: CalendarViewModel
     @ObservedObject var activityVM: ActivityViewModel
     @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         VStack(spacing: 10) {
-            // MARK: - Header: Month + Year with Arrow
+            // MARK: - رأس العرض: اسم الشهر والسنة + أسهم تنقل الأسبوع
             HStack {
+                // زر لإظهار/إخفاء منتقي الشهر (Wheel)
                 Button {
                     withAnimation(.easeInOut) {
                         calendarVM.showMonthPicker.toggle()
@@ -33,7 +37,7 @@ struct WeeklyCalendarView: View {
                 .buttonStyle(.plain)
                 
                 Spacer()
-                // Week navigation
+                // تنقّل بين الأسابيع
                 HStack(spacing: 16) {
                     Button(action: { calendarVM.goToPreviousWeek() }) {
                         Image(systemName: "chevron.left")
@@ -46,7 +50,8 @@ struct WeeklyCalendarView: View {
                 }
             }
             .padding(.horizontal)
-            // MARK: - Inline Month Picker
+            
+            // MARK: - منتقي الشهر المضمّن
             if calendarVM.showMonthPicker {
                 DatePicker(
                     "",
@@ -58,13 +63,15 @@ struct WeeklyCalendarView: View {
                 .frame(maxHeight: 189)
                 .transition(.opacity.combined(with: .move(edge: .top)))
                 .onChange(of: calendarVM.selectedMonth) { _ in
+                    // إعادة توليد أيام الأسبوع عند تغيير الشهر
                     calendarVM.generateWeekDays()
                 }
             }
-            // MARK: - Hidden Content When Month Picker Expanded
+            
+            // MARK: - محتوى الأسبوع (يختفي عند فتح منتقي الشهر)
             if !calendarVM.showMonthPicker {
                 VStack {
-                    // Weekday Titles
+                    // عناوين أيام الأسبوع
                     HStack {
                         ForEach(calendarVM.weekDays, id: \.self) { day in
                             Text(day)
@@ -74,7 +81,7 @@ struct WeeklyCalendarView: View {
                         }
                     }
 
-                    // Week Days
+                    // أرقام أيام الأسبوع مع التلوين حسب الحالة
                     HStack {
                         ForEach(calendarVM.daysInWeek) { day in
                             Text("\(Calendar.current.component(.day, from: day.date))")
@@ -87,45 +94,51 @@ struct WeeklyCalendarView: View {
                                 .foregroundColor(.white)
                         }
                     }
+                    
                     Divider()
                         .padding(.bottom, 12)
-                    //Added by me
-                    HStack{
+                    
+                    // عنوان يوضح المادة الحالية
+                    HStack {
                         Text("Learning \(activityVM.learnerM.subject)")
                             .font(.system(size: 16))
                             .bold()
-                        Spacer() //To change the aligment of the text to be leading
+                        Spacer()
                     }
                     .padding(.bottom, 12)
+                    
+                    // بطاقتان: الستريك والفريز
                     HStack {
-                        ZStack{
+                        // بطاقة الستريك
+                        ZStack {
                             RoundedRectangle(cornerRadius: 100)
                                 .fill(Color.clear)
                                 .frame(width: 160, height: 69)
                                 .glassEffect(.clear.tint(.streakBG))
-                            HStack{
+                            HStack {
                                 Image(systemName: "flame.fill")
                                     .font(.system(size: 15))
                                     .foregroundStyle(Color.flameOranage)
+                                // عرض العدد مع نص مفرد/جمع
                                 StreakFreezeView(count: activityVM.learnerM.streak, singular: "Day Streak", plural: "Days Streak")
-                            }//HStack - For Flame, Count, and Text
-                        }//ZStack - For Streak Overlaping
+                            }
+                        }
                         .padding(.trailing, 13)
-                        ZStack{
+                        
+                        // بطاقة الفريز
+                        ZStack {
                             RoundedRectangle(cornerRadius: 100)
                                 .fill(Color.clear)
                                 .frame(width: 160, height: 69)
                                 .glassEffect(.clear.tint(.freezeBG))
-                            HStack{
+                            HStack {
                                 Image(systemName: "cube.fill")
                                     .font(.system(size: 15))
                                     .foregroundStyle(Color.cubeBlue)
                                 StreakFreezeView(count: activityVM.learnerM.freezeCount, singular: "Day Frozen", plural: "Days Frozen")
-                     
-                            }//HStack - For Cube, Count, and Text
-                        }//ZStack - For Freeze Overlaping
-                    }//HStack - For Streak and Freeze Count
-                    
+                            }
+                        }
+                    }
                 }
                 .padding(.horizontal)
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -134,14 +147,14 @@ struct WeeklyCalendarView: View {
         .animation(.easeInOut, value: calendarVM.showMonthPicker)
     }
 
-    
-    // MARK: - Helper
+    // MARK: - Helper: لون الخلفية حسب حالة اليوم
     private func backgroundColor(for day: Day) -> Color {
         if day.isCurrent { return (activityVM.isLogButtonDisabled ? (activityVM.didUseFreezeToday ? .freezePrimaryButton : .streakBG ) : .currentDayCalendar) }
         if day.isLogged { return .streakBG }
         if day.isFreezed { return .freezeBG }
         return .clear
     }
+    // لون النص حسب حالة اليوم
     private func foregroundColor(for: Day) -> Color {
         if `for`.isCurrent { return (activityVM.isLogButtonDisabled ? (activityVM.didUseFreezeToday ? .cubeBlue : .flameOranage) : .white) }
         if `for`.isLogged { return .flameOranage }
