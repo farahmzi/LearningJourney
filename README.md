@@ -12,6 +12,12 @@ A SwiftUI application that supports learners in developing consistent daily habi
 
 Learning Journey empowers users to set learning goals and visualize their progress across flexible timeframes (week, month, or year). The interface integrates a clean calendar view, visual streak indicators, and a freeze-day system to help users stay consistent even during breaks.
 
+
+## Design System
+
+
+<img width="1920" height="1080" alt="views" src="https://github.com/user-attachments/assets/d6fef570-d7d6-48c2-929a-3e85242cc84e" />
+
 ---
 
 ## Key Features
@@ -39,12 +45,6 @@ Learning Journey empowers users to set learning goals and visualize their progre
 - Optimized for dark mode
 - Custom animations and transitions
 - Reusable UI components for consistency
-
-
-## Design System
-
-
-<img width="1920" height="1080" alt="views" src="https://github.com/user-attachments/assets/d6fef570-d7d6-48c2-929a-3e85242cc84e" />
 
 ---
 
