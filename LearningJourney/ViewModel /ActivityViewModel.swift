@@ -33,16 +33,14 @@ class ActivityViewModel: ObservableObject {
         setupFreezeLimit()
         setupMidnightReset()
         updateButtonStates()
+        // تحقق أولي عند الإنشاء
+        isGoalAchieved()
     }
 
     // MARK: - Setup
     private func setupFreezeLimit() {
-        // Ensure freezeLimit matches the selected duration
-        switch learnerM.duration {
-        case .week:  learnerM.freezeLimit = 2
-        case .month: learnerM.freezeLimit = 8
-        case .year:  learnerM.freezeLimit = 96
-        }
+        // استخدم المصدر الموحد من Duration
+        learnerM.freezeLimit = learnerM.duration.defaultFreezeLimit
     }
 
     // MARK: - Actions
@@ -52,6 +50,8 @@ class ActivityViewModel: ObservableObject {
         learnerM.loggedDates.append(Date())
         lastLoggedDate = Date()
         disableButtonsUntilMidnight()
+        // تحقق من تحقيق الهدف بعد كل تحديث
+        isGoalAchieved()
     }
 
     func useFreeze() {
@@ -66,6 +66,8 @@ class ActivityViewModel: ObservableObject {
         lastLoggedDate = Date()
         didUseFreezeToday = true
         disableButtonsUntilMidnight()
+        // تحقق من تحقيق الهدف بعد كل تحديث
+        isGoalAchieved()
     }
 
     // MARK: - Resetting and Conditions
@@ -88,6 +90,7 @@ class ActivityViewModel: ObservableObject {
         lastLoggedDate = nil
         didUseFreezeToday = false
         isOutOfFreeze = false
+        isAchieved = false
         updateButtonStates()
     }
 
@@ -126,16 +129,13 @@ class ActivityViewModel: ObservableObject {
         setupMidnightReset() // schedule again for next day
     }
 
-    
+    // MARK: - Goal Achievement
     func isGoalAchieved() {
-        
         let total = getDayCount(learnerM.duration)
-        
-        // if it is less than the total days then the goal still not achieved
-        self.isAchieved = learnerM.freezeCount + learnerM.streak > total
+        // تحقّق عند اكتمال العدد المطلوب أو تجاوزه
+        self.isAchieved = learnerM.freezeCount + learnerM.streak >= total
     }
-    
-    
+
     func getDayCount(_ duration: LearnerModel.Duration ) -> Int{
         switch duration {
         case .week:

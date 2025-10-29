@@ -92,7 +92,9 @@ struct ActivityView: View {
                         .font(.system(size: 14))
                         .foregroundColor(Color(.gray))
                 } else {
-                    Welldone()
+                    Welldone(onEditTapped: {
+                        showChangeGoal = true
+                    })
                 }
                 
                
@@ -116,16 +118,16 @@ struct ActivityView: View {
     }//body
     
 }//struct
-#Preview {
-    
+
+
+// معاينة: أسبوع مع 7 أيام (يظهر Welldone)
+#Preview("Week - 7 days (should achieve)") {
     ActivityView(learnerM: LearnerModel(
         subject: "Swift",
         duration: .week,
         startDate: Date(),
-        streak: 3,
-        freezeCount: 7,
-        freezeLimit: 3
+        streak: 5,
+        freezeCount: 2,
+        freezeLimit: LearnerModel.Duration.week.defaultFreezeLimit
     ))
 }
-
-
