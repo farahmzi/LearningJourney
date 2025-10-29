@@ -230,3 +230,22 @@ private struct ConfirmCard: View {
         .accessibilityAddTraits(.isModal)
     }
 }
+
+#Preview {
+    // نموذج بيانات للتجربة
+    let sampleLearner = LearnerModel(
+        subject: "Swift",
+        duration: .month,
+        startDate: Date(),
+        streak: 5,
+        freezeCount: 2,
+        freezeLimit: LearnerModel.Duration.month.defaultFreezeLimit
+    )
+    let activityVM = ActivityViewModel(learnerM: sampleLearner)
+    let calendarVM = CalendarViewModel(learnerM: sampleLearner)
+
+    return NavigationStack {
+        ChangeLearningGoalView(activityVM: activityVM, calendarVM: calendarVM)
+    }
+    .preferredColorScheme(.dark)
+}

@@ -14,6 +14,7 @@ import SwiftUI
 class ActivityViewModel: ObservableObject {
     // The model this VM manages
     @Published var learnerM: LearnerModel
+    @Published var isAchieved: Bool =  false
 
     // State
     @Published var lastLoggedDate: Date?
@@ -125,6 +126,27 @@ class ActivityViewModel: ObservableObject {
         setupMidnightReset() // schedule again for next day
     }
 
+    
+    func isGoalAchieved() {
+        
+        let total = getDayCount(learnerM.duration)
+        
+        // if it is less than the total days then the goal still not achieved
+        self.isAchieved = learnerM.freezeCount + learnerM.streak > total
+    }
+    
+    
+    func getDayCount(_ duration: LearnerModel.Duration ) -> Int{
+        switch duration {
+        case .week:
+            return 7
+        case .month:
+            return 30
+        case .year:
+            return 365
+        }
+    }
+    
     deinit {
         midnightTimer?.invalidate()
     }
