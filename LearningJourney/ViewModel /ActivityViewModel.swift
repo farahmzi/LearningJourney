@@ -2,8 +2,8 @@
 //  ActivityViewModel.swift
 //  LearningJourney
 //
-//  Created by Yousra Abdelrahman on 01/05/1447 AH.
 //
+//  Created by Farah Almozaini on 28/10/2025.
 //
 
 import Foundation

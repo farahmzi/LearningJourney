@@ -2,7 +2,7 @@
 //  WeeklyCalendarView.swift
 //  LearningJourney
 //
-//  Created by Yousra Abdelrahman on 04/05/1447 AH.
+//  Created by Farah Almozaini on 28/10/2025.
 //
 
 import SwiftUI
